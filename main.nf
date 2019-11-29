@@ -6,11 +6,11 @@
  * 2) Add option for tissue specific analysis (without 500bp window, Rscript to gather results and compute pvalue from coefficient z-scores)
  * 3) Add option for continuous phenotype analysis
  * 4) Test on SLURM cluster
+ * 5) Use CSV for phenotype
  */
  
-// LDSC core files path. This can be changed using the --LDSC_files modifier
-// See nextflow.config for parameters
-//params.LDSC_files = "/nas/longleaf/home/jbryois/Projects/partitioned_LDSC/"
+// LDSC core files path can be changed using the --LDSC_files modifier
+// The params.LDSC_files is located in the 
 
 // LDSC necessary files (European population)
 plink = params.LDSC_files + "1000G_EUR_Phase3_plink/1000G.EUR.QC."
@@ -31,6 +31,7 @@ params.outputDir = "output"
 // This can be changed using the --pheno modifier (e.g. --pheno mysumstats.txt)
 // The file should contain an identifier and the location of the corresponding sumstats in a tab delimited files (e.g. scz /path/to/LDSC/sumstats/scz.sumstats.gz)
 params.pheno = "pheno.txt"
+pheno_file = file(params.pheno)
 
 // By default, the pipeline will use the Finucane et al. 2015 annotation
 // The model from Gazal et al. 2018 can also be used.
@@ -59,16 +60,15 @@ log.info """\
 
  """
 
-
 /* 
  *
  *	Code below should not need to be modified to run the pipeline!
  *
  */
 
-// Creates a channel for the different phenotypes to be tested 
+// Creates a channel for the different phenotypes to be tested
 Channel
-    .fromPath(params.pheno)
+    .fromPath(pheno_file)
     .splitText()
     .map{ line -> tuple(line.split('\t')[0],line.split('\t')[1]) }
     .set { ch_pheno }
