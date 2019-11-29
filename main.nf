@@ -26,9 +26,9 @@ bedfiles = Channel.fromPath(params.bed + "*.bed")
 params.outputDir = "output"
 
 // Phenotype file, tab separated with name of phenotype in first column and path in second column
-// This can be changed using the --phenotype_file modifier (e.g. --phenotype_file mysumstats.txt)
+// This can be changed using the --pheno modifier (e.g. --pheno mysumstats.txt)
 // The file should contain an identifier and the location of the corresponding sumstats in a tab delimited files (e.g. scz /path/to/LDSC/sumstats/scz.sumstats.gz)
-params.phenotype_file = "pheno.txt"
+params.pheno = "pheno.txt"
 
 // By default, the pipeline will use the Finucane et al. 2015 annotation
 // The model from Gazal et al. 2018 can also be used.
@@ -49,7 +49,7 @@ if (params.model == "Finucane"){
 
 // Creates a channel for the different phenotypes to be tested 
 Channel
-    .fromPath(params.phenotype_file)
+    .fromPath(params.pheno)
     .splitText()
     .map{ line -> tuple(line.split('\t')[0],line.split('\t')[1]) }
     .set { ch_pheno }
