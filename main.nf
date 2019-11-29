@@ -109,7 +109,11 @@ InputBedsPerChr
  * between the input bed chromosome and the annotation, add the overlapping SNPs to the annotation file, compute LD scores for the new annotation
  */
 process getLDscores {
+    
+    module 'bedtools/2.25.0:ldsc/1.0.0'
+    
     publishDir "${params.outputDir}/$inputname/$params.model/LDscores"
+	
 	input:
 	set val(inputname), file(input_bed), file(baseline_annot), file(plink_bim), file(plink_bed), file(plink_fam), file('hm_snp.txt') from ch_chr
 	
