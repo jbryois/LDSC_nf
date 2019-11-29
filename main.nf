@@ -9,7 +9,7 @@
  */
  
 // LDSC core files path. This can be changed using the --LDSC_files modifier
-params.LDSC_files = "/Users/julienbryios/Documents/Data/Projects/LDSC_nf/"
+params.LDSC_files = "/nas/longleaf/home/jbryois/Projects/partitioned_LDSC/"
 
 // LDSC necessary files (European population)
 plink = params.LDSC_files + "1000G_EUR_Phase3_plink/1000G.EUR.QC."
