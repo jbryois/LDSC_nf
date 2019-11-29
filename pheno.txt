@@ -1,0 +1,3 @@
+clozuk	/Users/julienbryios/Documents/Data/GWAS/SCZ_Clozuk/clozuk.sumstats.gz
+park	/Users/julienbryios/Documents/Data/GWAS/ParkinsonMeta/ParkinsonMeta2018.sumstats.gz
+alz2018	/Users/julienbryios/Documents/Data/GWAS/Alzheimer_Posthuma_2018_my_processing/alz2018.sumstats.gz
