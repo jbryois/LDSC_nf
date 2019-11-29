@@ -18,8 +18,8 @@ weights = params.LDSC_files +"1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC.
 
 // By default, the pipeline will run on all bed files in the folder where the nextflow pipeline is located
 // This can be changed using the --bed modifier (e.g. --bed myBedFolder/*.bed)
-params.bed = "*.bed"
-bedfiles = Channel.fromPath(params.bed)
+params.bed = ""
+bedfiles = Channel.fromPath(params.bed + "*.bed")
 
 // Output directory. By default LDSC files will be outputed in a folder named "output"
 // This can be changed using the --outputDir modifier (e.g. --outputDir LDSC_results)
