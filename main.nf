@@ -46,14 +46,16 @@ log.info """\
  LDSC - N F   P I P E L I N E
  ===================================
  model	: ${params.model}
+ bed path	: ${params.bed}
+ outputDir	: ${params.outputDir}
+ phenotypes	: ${params.pheno}
  LDSC path	: ${params.LDSC_files}
  LDSC plink	: ${plink}
  LDSC frq	: ${frq}
  LDSC weights	: ${weights}
- bed path	: ${params.bed}
- outputDir	: ${params.outputDir}
- phenotypes	: ${params.pheno}
  hm_snps	: ${hmsnps}
+ ===================================
+
  """
 
 
