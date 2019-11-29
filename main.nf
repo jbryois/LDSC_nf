@@ -17,8 +17,8 @@ frq = params.LDSC_files + "1000G_Phase3_frq/1000G.EUR.QC."
 weights = params.LDSC_files +"1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC."
 
 // By default, the pipeline will run on all bed files in the folder where the nextflow pipeline is located
-// This can be changed using the --bed modifier (e.g. --bed myBedFolder/*.bed)
-params.bed = ""
+// This can be changed using the --bed modifier (e.g. --bed /Users/home/myBedFolder/)
+params.bed = "./"
 bedfiles = Channel.fromPath(params.bed + "*.bed")
 
 // Output directory. By default LDSC files will be outputed in a folder named "output"
@@ -40,6 +40,20 @@ if (params.model == "Finucane"){
 } else {
 	error("Please input a valid baseline model: Finucane or Gazal")
 	}
+
+log.info """\
+ LDSC - N F   P I P E L I N E
+ ===================================
+ LDSC path	: ${params.LDSC_files}
+ LDSC plink	: ${plink}
+ LDSC frq	: ${frq}
+ LDSC weights	: ${weights}
+ bed path	: ${params.bed}
+ outputDir	: ${params.outputDir}
+ phenotypes	: ${params.pheno}
+ hm_snps	: hm_snp.txt
+ """
+
 
 /* 
  *
