@@ -150,6 +150,8 @@ process getLDscores {
 		awk '{if(\$5!=0) print \$4}' $input_bed".1000genomes.500bp.ext.intersect" > $input_bed".1000genomes.500bp.ext.intersect.snp"
 		fast_match2_minimal.gz.pl $input_bed".1000genomes.intersect.snp" $inputname $baseline_annot > tmp
 		fast_match2.gz.pl $input_bed".1000genomes.500bp.ext.intersect.snp" $inputname"_500bp_ext" tmp | gzip > $outname".annot.gz"
+		rm tmp
+		rm *500bp.ext
 	 else
 		fast_match2_minimal.gz.pl $input_bed".1000genomes.intersect.snp" $inputname $baseline_annot | gzip > $outname".annot.gz"
 	fi
@@ -157,9 +159,6 @@ process getLDscores {
 	rm *.intersect
 	rm *.intersect.snp
 	rm $baseline_annot".bed"
-	rm tmp
-	rm *500bp.ext
-	rename s'/.augmented//' *	
 	"""
 }
 
