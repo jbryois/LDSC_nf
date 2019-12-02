@@ -179,8 +179,9 @@ LDscores
  */
  
 process GetPhenotypeEnrichment {
+	if (!params.tissue){
     publishDir "${params.outputDir}/$inputname/$analysis_type/Results/", mode: 'copy', overwrite: true
-	
+	}
 	input:
 	set inputname, path(inputLDscores),pheno,path(sumstats) from LDscores_join
 	
