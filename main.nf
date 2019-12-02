@@ -191,4 +191,23 @@ process GetPhenotypeEnrichment {
 	ldsc.py --h2 $sumstats --ref-ld-chr $model_path,input. --w-ld-chr $weights --overlap-annot --frqfile-chr $frq --print-coefficients --out ${pheno}_${inputname}
 	"""
 }
- 
+
+// For tissue specific analysis - Gathers the results files, compute pvalue and produce final results file
+
+process GetTissuePvalues {
+    echo true
+    publishDir "${params.outputDir}/$inputname/$analysis_type/Results/", mode: 'copy', overwrite: true
+    
+	input:
+	set inputname, path('*results') from Results
+	
+	output:
+	set inputname, path('*.txt') into Results
+
+	when:
+	params.tissue
+	
+	"""
+	echo "test" > ${inputname}
+	"""
+}
