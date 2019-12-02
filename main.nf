@@ -202,7 +202,7 @@ process GetTissuePvalues {
 	set inputname, path('*results') from Results
 	
 	output:
-	set inputname, path('*.txt') into Results
+	set inputname, path('*.txt') into TissueCleanResults
 
 	when:
 	params.tissue
