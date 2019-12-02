@@ -42,6 +42,7 @@ if (params.tissue){
 
 // Info displayed at runtime
 log.info """\
+ ===================================
 
  Usage: 
  nextflow run LDSC_nf
@@ -54,6 +55,7 @@ log.info """\
  phenotype file: --pheno pheno.csv (default name) (two columns: id in the first column, sumstats path in the second, no header!)
  LDSC path: --LDSC_files /path/to/LDSC
  
+ ===================================
  L D S C       -   P I P E L I N E
  ===================================
  analysis_type	: ${analysis_type}
@@ -70,7 +72,7 @@ log.info """\
  To download the latest version of the pipeline run:
  nextflow pull jbryois/LDSC_nf
 
-
+ ===================================
  """
 
 /* 
