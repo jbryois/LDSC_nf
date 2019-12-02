@@ -47,10 +47,10 @@ log.info """\
  Usage: nextflow run jbryois/LDSC_nf 
  
  Options:
- model: --model Finucane (Gazal)
- bed: --bed /mybeds/location/ (file should have no header and be tab delimited!) 
- output directory: --outputDir MyOutputDir
- phenotype file: --pheno phenotype.csv (two columns with id in the first column and sumstats path in the second)
+ model: --model Finucane (default) or Gazal
+ bed: --bed /mybeds/location/ (default, current directory) (file should have no header and be tab delimited!) 
+ output directory: --outputDir MyOutputDir (default, output folder in current directory)
+ phenotype file: --pheno pheno.csv (two columns: id in the first column and sumstats path in the second)
  LDSC path: --LDSC_files /path/to/LDSC
  
  L D S C       -   P I P E L I N E
