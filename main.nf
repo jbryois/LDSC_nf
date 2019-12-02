@@ -1,12 +1,10 @@
 #!/usr/bin/env nextflow
-// Usage: nextflow run ldsc_pipeline.nf 
  
 /* To do
  * 1) Add option to add 500bp window or not
  * 2) Add option for tissue specific analysis (without 500bp window, Rscript to gather results and compute pvalue from coefficient z-scores)
  * 3) Add option for continuous phenotype analysis
  * 4) Test on SLURM cluster
- * 5) Use CSV for phenotype
  */
  
 // LDSC core files path can be changed using the --LDSC_files modifier
@@ -30,7 +28,7 @@ params.outputDir = "output"
 // Phenotype file, tab separated with name of phenotype in first column and path in second column
 // This can be changed using the --pheno modifier (e.g. --pheno mysumstats.txt)
 // The file should contain an identifier and the location of the corresponding sumstats in a tab delimited files (e.g. scz /path/to/LDSC/sumstats/scz.sumstats.gz)
-params.pheno = "pheno.txt"
+params.pheno = "pheno.csv"
 pheno_file = file(params.pheno)
 
 // By default, the pipeline will use the Finucane et al. 2015 annotation
@@ -45,7 +43,17 @@ if (params.model == "Finucane"){
 	}
 
 log.info """\
- LDSC - N F   P I P E L I N E
+
+ Usage: nextflow run jbryois/LDSC_nf 
+ 
+ Options:
+ model: --model Finucane (Gazal)
+ bed: --bed /mybeds/location/ (file should have no header and be tab delimited!) 
+ output directory: --outputDir MyOutputDir
+ phenotype file: --pheno phenotype.csv (two columns with id in the first column and sumstats path in the second)
+ LDSC path: --LDSC_files /path/to/LDSC
+ 
+ L D S C       -   P I P E L I N E
  ===================================
  model	: ${params.model}
  bed path	: ${params.bed}
@@ -62,17 +70,15 @@ log.info """\
 
 /* 
  *
- *	Code below should not need to be modified to run the pipeline!
+ *	CODE BELOW SHOULD NOT NEED TO BE MODIFIED TO RUN THE PIPELINE!
  *
  */
 
 // Creates a channel for the different phenotypes to be tested
 Channel
     .fromPath(pheno_file)
-    .splitText()
-    .map{ line -> tuple(line.split('\t')[0],line.split('\t')[1]) }
+    .splitCsv(header: false)
     .set { ch_pheno }
-
 
 // Splits Input bed files per chromosome (1-22). Outputs the inputname and bed files for each chromosome
 process SplitInputBedsPerChr {
@@ -111,7 +117,7 @@ InputBedsPerChr
  */
 process getLDscores {
         
-    publishDir "${params.outputDir}/$inputname/$params.model/LDscores"
+    publishDir "${params.outputDir}/$inputname/$params.model/LDscores" 
 	
 	input:
 	set val(inputname), file(input_bed), file(baseline_annot), file(plink_bim), file(plink_bed), file(plink_fam), file('hm_snp.txt') from ch_chr
@@ -158,7 +164,7 @@ LDscores
 /* Gather all LD files for each inputBed and and phenotypes and run partitioned LD score regression for each input file and each phenotype
  */
 process GetPhenotypeEnrichment {
-    publishDir "${params.outputDir}/$inputname/$params.model/Results/"
+    publishDir "${params.outputDir}/$inputname/$params.model/Results/", mode: 'copy', overwrite: true
 	
 	input:
 	set inputname, path(inputLDscores),pheno,path(sumstats) from LDscores_join
