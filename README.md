@@ -30,7 +30,7 @@ mv nextflow $HOME
 
 2. LDSC files
 
-LDSC files can be installed in a specified directory using the following commands:
+LDSC files can be installed in a the current directory using the following commands:
 
 ```
 
