@@ -63,7 +63,7 @@ log.info """\
  analysis_type	: ${analysis_type}
  tissue mode	: ${params.tissue}
  bed path	: ${params.bed}
- out	: ${params.out}
+ out		: ${params.out}
  phenotypes	: ${params.pheno}
  LDSC path	: ${params.LDSC_files}
  LDSC plink	: ${plink}
