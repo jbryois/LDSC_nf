@@ -51,6 +51,26 @@ bunzip2 w_hm3.snplist.bz2
 tail -n +2 w_hm3.snplist | cut -f 1 > hm_snp.txt
 ```
 
+3. LDSC
+
+LDSC should either be installed on your cluster and the module should be loaded like this:
+
+```
+module load ldsc/1.0.0
+```
+
+or you can modify the nextflow.config file to indicate the command to load ldsc
+
+```
+process {
+		withName: Get_pLDSC_Results {
+			module = 'ldsc/1.0.0'
+		}
+	}
+```
+
+Or you need to install LDSC with its dependencies and put it in your $PATH. More info for LDSC installation can be found [here](https://github.com/bulik/ldsc).
+
 # Usage
 
 First you need to pull the latest version from github
