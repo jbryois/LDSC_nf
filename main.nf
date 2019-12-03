@@ -180,7 +180,7 @@ LDscores
  */
  
 process GetPhenotypeEnrichment {
-	publishDir "${params.outputDir}/$analysis_type/Results_raw/"
+	publishDir "${params.outputDir}/$analysis_type/Results_raw/", mode: 'copy', overwrite: true
 
 	input:
 	set inputname, path(inputLDscores),pheno,path(sumstats) from LDscores_join
