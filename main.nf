@@ -29,8 +29,10 @@ params.tissue = false
 params.model = "Finucane"
 if (params.model == "Finucane"){
 	model_path = params.LDSC_files + "1000G_EUR_Phase3_baseline/baseline."
+	analysis_type = "Finucane"
 } else if (params.model == "Gazal"){
 	model_path = params.LDSC_files + "baselineLD_v1.1/baselineLD."
+	analysis_type = "Gazal"
 } else {
 	error("Please input a valid baseline model: Finucane or Gazal")
 	}
@@ -52,13 +54,14 @@ log.info """\
  tissue: --tissue (to run tissue association analysis) (default off)
  bed: --bed /mybeds/location/ (default, current directory) (bed files should be tab delimited with no header!) 
  output directory: --outputDir output (default, output folder current directory)
- phenotype file: --pheno pheno.csv (default name) (two columns: id in the first column, sumstats path in the second, no header!)
+ phenotype file: --pheno pheno.csv (default name) (two columns: id in the first column (no underscore), sumstats path in the second) (No header)
  LDSC path: --LDSC_files /path/to/LDSC
  
  ===================================
  L D S C       -   P I P E L I N E
  ===================================
  analysis_type	: ${analysis_type}
+ tissue mode	: ${params.tissue}
  bed path	: ${params.bed}
  outputDir	: ${params.outputDir}
  phenotypes	: ${params.pheno}
@@ -82,6 +85,7 @@ log.info """\
  */
  
 // Creates a channel for the different phenotypes to be tested
+// The phenotype name should not contain an underscore
 Channel
     .fromPath(pheno_file)
     .splitCsv(header: false)
@@ -123,8 +127,6 @@ InputBedsPerChr
  * between the input bed chromosome and the annotation, add the overlapping SNPs to the annotation file, compute LD scores for the new annotation
  */
 process getLDscores {
-
-    publishDir "${params.outputDir}/$inputname/$analysis_type/LDscores" 
 	
 	input:
 	set val(inputname), file(input_bed), file(baseline_annot), file(plink_bim), file(plink_bed), file(plink_fam), file('hm_snp.txt') from ch_chr
@@ -178,36 +180,55 @@ LDscores
  */
  
 process GetPhenotypeEnrichment {
-	if (!params.tissue){
-    publishDir "${params.outputDir}/$inputname/$analysis_type/Results/", mode: 'copy', overwrite: true
-	}
+	publishDir "${params.outputDir}/$analysis_type/Results_raw/"
+
 	input:
 	set inputname, path(inputLDscores),pheno,path(sumstats) from LDscores_join
 	
 	output:
-	set inputname, path('*results') into Results
-
+	file('*results') into (Results_ch_h2,Results_ch_tissue)
+	
 	"""
 	ldsc.py --h2 $sumstats --ref-ld-chr $model_path,input. --w-ld-chr $weights --overlap-annot --frqfile-chr $frq --print-coefficients --out ${pheno}_${inputname}
 	"""
 }
 
+// For enrichment analysis - Gathers the results files and compute final file
+
+process GetEnrichmentPvalues {
+    publishDir "${params.outputDir}/$analysis_type/", mode: 'copy', overwrite: true
+    
+    input:
+	path(results) from Results_ch_h2.collect()
+	
+	output:
+	file('*.txt') into CleanResultsH2
+
+	when:
+	!params.tissue
+	
+	"""
+	CleanH2Results.R
+	"""
+}
+
+
 // For tissue specific analysis - Gathers the results files, compute pvalue and produce final results file
 
 process GetTissuePvalues {
-    echo true
-    publishDir "${params.outputDir}/$inputname/$analysis_type/Results/", mode: 'copy', overwrite: true
+    publishDir "${params.outputDir}/$analysis_type/", mode: 'copy', overwrite: true
     
 	input:
-	set inputname, path('*results') from Results
+	path(results) from Results_ch_tissue.collect()
 	
 	output:
-	set inputname, path('*.txt') into TissueCleanResults
+	file('*.txt') into CleanResultsZ
 
 	when:
 	params.tissue
 	
 	"""
-	echo "test" > ${inputname}
+	CleanTissueResults.R
 	"""
 }
+
