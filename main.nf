@@ -92,7 +92,7 @@ Channel
     .set { ch_pheno }
 
 // Splits Input bed files per chromosome (1-22). Outputs the inputname and bed files for each chromosome
-process SplitInputBedsPerChr {
+process Split_input_beds_per_chr {
 
 	input:
 	file bed from bedfiles
@@ -126,7 +126,7 @@ InputBedsPerChr
 /* Gets extended bed annotation for the input bed chromosome file (+-500bp), gets bed file for the annotation file (same chr), gets overlapping SNPs
  * between the input bed chromosome and the annotation, add the overlapping SNPs to the annotation file, compute LD scores for the new annotation
  */
-process getLDscores {
+process Get_LD_scores {
 	
 	input:
 	set val(inputname), file(input_bed), file(baseline_annot), file(plink_bim), file(plink_bed), file(plink_fam), file('hm_snp.txt') from ch_chr
@@ -179,7 +179,7 @@ LDscores
 /* Gather all LD files for each inputBed and and phenotypes and run partitioned LD score regression for each input file and each phenotype
  */
  
-process GetPhenotypeEnrichment {
+process Get_pLDSC_Results {
 	publishDir "${params.outputDir}/$analysis_type/Results_raw/", mode: 'copy', overwrite: true
 
 	input:
@@ -195,7 +195,7 @@ process GetPhenotypeEnrichment {
 
 // For enrichment analysis - Gathers the results files and compute final file
 
-process GetEnrichmentPvalues {
+process Clean_results_h2_enrichment {
     publishDir "${params.outputDir}/$analysis_type/", mode: 'copy', overwrite: true
     
     input:
@@ -215,7 +215,7 @@ process GetEnrichmentPvalues {
 
 // For tissue specific analysis - Gathers the results files, compute pvalue and produce final results file
 
-process GetTissuePvalues {
+process Clean_results_tissue_association {
     publishDir "${params.outputDir}/$analysis_type/", mode: 'copy', overwrite: true
     
 	input:
