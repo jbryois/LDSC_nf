@@ -12,8 +12,8 @@ params.bed = "./"
 bedfiles = Channel.fromPath(params.bed + "*.bed")
 
 // Output directory. By default LDSC files will be outputed in a folder named "output"
-// This can be changed using the --outputDir modifier (e.g. --outputDir LDSC_results)
-params.outputDir = "output"
+// This can be changed using the --out modifier (e.g. --out LDSC_results)
+params.out = "output"
 
 // Phenotype file, comma separated with name of phenotype in first column and path in second column, no header!
 // (e.g. scz,/path/to/LDSC/sumstats/scz.sumstats.gz)
@@ -53,7 +53,7 @@ log.info """\
  model: --model Finucane (default) or Gazal
  tissue: --tissue (to run tissue association analysis) (default off)
  bed: --bed /mybeds/location/ (default, current directory) (bed files should be tab delimited with no header!) 
- output directory: --outputDir output (default, output folder current directory)
+ output directory: --out output (default, output folder current directory)
  phenotype file: --pheno pheno.csv (default name) (two columns: id in the first column (no underscore), sumstats path in the second) (No header)
  LDSC path: --LDSC_files /path/to/LDSC
  
@@ -63,7 +63,7 @@ log.info """\
  analysis_type	: ${analysis_type}
  tissue mode	: ${params.tissue}
  bed path	: ${params.bed}
- outputDir	: ${params.outputDir}
+ out	: ${params.out}
  phenotypes	: ${params.pheno}
  LDSC path	: ${params.LDSC_files}
  LDSC plink	: ${plink}
@@ -180,7 +180,7 @@ LDscores
  */
  
 process Get_pLDSC_Results {
-	publishDir "${params.outputDir}/$analysis_type/Results_raw/", mode: 'copy', overwrite: true
+	publishDir "${params.out}/$analysis_type/Results_raw/", mode: 'copy', overwrite: true
 
 	input:
 	set inputname, path(inputLDscores),pheno,path(sumstats) from LDscores_join
@@ -196,7 +196,7 @@ process Get_pLDSC_Results {
 // For enrichment analysis - Gathers the results files and compute final file
 
 process Clean_results_h2_enrichment {
-    publishDir "${params.outputDir}/$analysis_type/", mode: 'copy', overwrite: true
+    publishDir "${params.out}/$analysis_type/", mode: 'copy', overwrite: true
     
     input:
 	path(results) from Results_ch_h2.collect()
@@ -216,7 +216,7 @@ process Clean_results_h2_enrichment {
 // For tissue specific analysis - Gathers the results files, compute pvalue and produce final results file
 
 process Clean_results_tissue_association {
-    publishDir "${params.outputDir}/$analysis_type/", mode: 'copy', overwrite: true
+    publishDir "${params.out}/$analysis_type/", mode: 'copy', overwrite: true
     
 	input:
 	path(results) from Results_ch_tissue.collect()
