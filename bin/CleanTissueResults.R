@@ -1,6 +1,7 @@
 #!/usr/bin/env Rscript
 
 library(tidyverse)
+library(stringr)
 
 files <- list.files(".",pattern=".results",full.names = TRUE)
 
