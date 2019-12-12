@@ -103,7 +103,7 @@ process Split_input_beds_per_chr {
 	script:
   	inputname = bed.toString() - ~/.bed$/
 	"""
-	awk '\$1 ~ /^chr(1?[0-9]|2[0-2] )/ {print \$0 >> \$1;close(\$1)}' < $bed
+	awk '\$1 ~ /^chr[1-2]?[0-9]{1}\$/ {print \$0 >> \$1;close(\$1)}' < $bed
 	"""
 	}
 	
