@@ -103,7 +103,7 @@ process Split_input_beds_per_chr {
 	script:
   	inputname = bed.toString() - ~/.bed$/
 	"""
-	awk '\$1 ~ /^chr(1?[0-9]|2[0-2])/ {print \$0 >> \$1;close(\$1)}' < $bed
+	awk '\$1 ~ /^chr(1?[0-9]|2[0-2] )/ {print \$0 >> \$1;close(\$1)}' < $bed
 	"""
 	}
 	
@@ -119,7 +119,7 @@ InputBedsPerChr
         file(plink + "${onefile.simpleName.replaceFirst(/chr/,'')}" + ".bim"), \
         file(plink + "${onefile.simpleName.replaceFirst(/chr/,'')}" + ".bed"), \
         file(plink + "${onefile.simpleName.replaceFirst(/chr/,'')}" + ".fam"), \
-        file('hm_snp.txt')]}
+        file(hmsnps)]}
     }
     .set { ch_chr }
 
