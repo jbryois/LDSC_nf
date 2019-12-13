@@ -104,6 +104,13 @@ process Split_input_beds_per_chr {
   	inputname = bed.toString() - ~/.bed$/
 	"""
 	awk '\$1 ~ /^chr[1-2]?[0-9]{1}\$/ {print \$0 >> \$1;close(\$1)}' < $bed
+	for i in {23..29}
+	do
+	if [ -f chr\$i ];
+	then
+		rm chr\$i
+	fi
+	done
 	"""
 	}
 	
@@ -178,7 +185,6 @@ LDscores
 
 /* Gather all LD files for each inputBed and and phenotypes and run partitioned LD score regression for each input file and each phenotype
  */
- 
 process Get_pLDSC_Results {
 	publishDir "${params.out}/$analysis_type/Results_raw/", mode: 'copy', overwrite: true
 
