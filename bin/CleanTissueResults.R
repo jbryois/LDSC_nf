@@ -1,7 +1,9 @@
 #!/usr/bin/env Rscript
 
-library(tidyverse)
-library(stringr)
+list.of.packages <- c("tidyverse", "stringr","crayon","scales")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
 
 files <- list.files(".",pattern=".results",full.names = TRUE)
 
